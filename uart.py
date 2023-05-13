@@ -96,6 +96,18 @@ class UART:
             return None
         return int.from_bytes(tmp, byteorder='little', signed=False)
 
+    def read_bytes(self, size: int = 1):
+        try:
+            tmp = self.ser.read(size)
+        except serial.SerialException:
+            log.err('the device was disconnected')
+            exit()
+
+        if tmp == b'':
+            return None
+
+        return tmp
+
     def send_byte(self, byte):
         try:
             self.ser.write(bytes((byte,)))
