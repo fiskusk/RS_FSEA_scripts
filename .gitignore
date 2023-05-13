@@ -1,0 +1,6 @@
+desktop.ini
+/__pycache__
+/trc_spect
+/img_spect
+.vscode
+*.code-workspace
