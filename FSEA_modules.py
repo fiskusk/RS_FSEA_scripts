@@ -40,7 +40,7 @@ class Analyzer(object):
             self.uart.send_byte(10)  # LF
             print('Send command {}.'.format(cmd))
     
-    def send_read(self, cmd):
+    def send_read(self, cmd, print_output = False):
         self.send_cmd(cmd)
         received = False
         received_data = []
@@ -54,6 +54,9 @@ class Analyzer(object):
             if (byte == None):
                 received = True
                 received_data = None
+        if print_output == True:
+            print('Received {}.'.format(''.join(chr(x) for x in received_data)))
+            print('Received {}.'.format(received_data))
         return received_data
     
     def str_to_list(self, str):
@@ -62,9 +65,10 @@ class Analyzer(object):
             data.append(ord(c))
         return data
     
-    def make_header(self, comment, freq_start, freq_stop, freq_span):
+    def make_header(self, comment, trace, freq_start, freq_stop, freq_span):
         header = []
         header += self.str_to_list("# Comment: " + comment + "\n")
+        header += self.str_to_list("# " + trace + "\n")
         header += self.str_to_list("# Freq Start: ")
         header += freq_start
         header += self.str_to_list(" Hz\n")
@@ -77,7 +81,7 @@ class Analyzer(object):
 
         return header
     
-    def get_trace_data(self, title, comment):
+    def get_dates_basic(self, comment, trace):
         trace_complete = False
         trace_data = []
         i = 0
@@ -86,9 +90,9 @@ class Analyzer(object):
         freq_stop = self.send_read('FREQ:STOP?')
         freq_span = self.send_read('FREQ:SPAN?')
         
-        trace_data += self.make_header(comment, freq_start, freq_stop, freq_span)
+        trace_data += self.make_header(comment, trace, freq_start, freq_stop, freq_span)
 
-        self.send_cmd('TRAC? TRACE1')
+        self.send_cmd('TRAC? ' + trace)
 
         print('Waiting for dates...')
         while (not trace_complete):
@@ -103,23 +107,13 @@ class Analyzer(object):
             i += 1
             print('\rReceived{:71d} B'.format(i), end='')
         print('\nReceived Complete')
-
-        create_file(trace_data, 'trc_spect', title)
+        return trace_data
     
-    def get_trace_file(self, title, comment):
+    def get_dates(self):
         trace_complete = False
         trace_data = []
         previous_byte = None
         i = 0
-
-        self.send_cmd('FORM:DEXP:DSEParator POINt')
-        self.send_cmd('FORM:DEXP:APPend OFF')
-        self.send_cmd('FORM:DEXP:HEADer ON')
-        self.send_cmd("FORM:DEXP:COMM '" + comment + "'")
-        self.send_cmd('MMEM:STOR:TRAC 1, \'C:\\USER\\DATA\\trace.dat\'')
-        time.sleep(3)
-
-        self.send_cmd('MMEM:DATA? \'C:\\USER\\DATA\\trace.dat\'')
 
         print('Waiting for dates...')
         start_character = self.uart.read_byte()
@@ -152,8 +146,50 @@ class Analyzer(object):
                     trace_data = None
                     print("\nCorrupted EOI end character")
                 previous_byte = byte
-        
-        create_file(trace_data, 'trc_spect', title)
+        return trace_data
+    
+    def get_trace_data(self, title, comment):
+        if ''.join(chr(x) for x in self.send_read("DISP:TRAC1?")) == "1":
+            create_file(self.get_dates_basic(comment, "TRACE1"), 'trc_spect', "TRC1; " + title)
+
+        if ''.join(chr(x) for x in self.send_read("DISP:TRAC2?")) == "1":
+            create_file(self.get_dates_basic(comment, "TRACE2"), 'trc_spect', "TRC2; " + title)
+
+        if ''.join(chr(x) for x in self.send_read("DISP:TRAC3?")) == "1":
+            create_file(self.get_dates_basic(comment, "TRACE3"), 'trc_spect', "TRC3; " + title)
+
+        if ''.join(chr(x) for x in self.send_read("DISP:TRAC4?")) == "1":
+            create_file(self.get_dates_basic(comment, "TRACE4"), 'trc_spect', "TRC4; " + title)
+    
+    def get_trace_file(self, title, comment):
+        self.send_cmd('FORM:DEXP:DSEParator POINt')
+        self.send_cmd('FORM:DEXP:APPend OFF')
+        self.send_cmd('FORM:DEXP:HEADer ON')
+        self.send_cmd("FORM:DEXP:COMM '" + comment + "'")
+
+        if ''.join(chr(x) for x in self.send_read("DISP:TRAC1?")) == "1":
+            self.send_cmd('MMEM:STOR:TRAC 1, \'C:\\USER\\DATA\\trace1.dat\'')
+            time.sleep(3)
+            self.send_cmd('MMEM:DATA? \'C:\\USER\\DATA\\trace1.dat\'')
+            create_file(self.get_dates(), 'trc_spect', "TRC1; " + title)
+
+        if ''.join(chr(x) for x in self.send_read("DISP:TRAC2?")) == "1":
+            self.send_cmd('MMEM:STOR:TRAC 2, \'C:\\USER\\DATA\\trace2.dat\'')
+            time.sleep(3)
+            self.send_cmd('MMEM:DATA? \'C:\\USER\\DATA\\trace2.dat\'')
+            create_file(self.get_dates(), 'trc_spect', "TRC2; " + title)
+
+        if ''.join(chr(x) for x in self.send_read("DISP:TRAC3?")) == "1":
+            self.send_cmd('MMEM:STOR:TRAC 3, \'C:\\USER\\DATA\\trace3.dat\'')
+            time.sleep(3)
+            self.send_cmd('MMEM:DATA? \'C:\\USER\\DATA\\trace3.dat\'')
+            create_file(self.get_dates(), 'trc_spect', "TRC3; " + title)
+
+        if ''.join(chr(x) for x in self.send_read("DISP:TRAC4?")) == "1":
+            self.send_cmd('MMEM:STOR:TRAC 4, \'C:\\USER\\DATA\\trace4.dat\'')
+            time.sleep(3)
+            self.send_cmd('MMEM:DATA? \'C:\\USER\\DATA\\trace4.dat\'')
+            create_file(self.get_dates(), 'trc_spect', "TRC4; " + title)
 
     def get_postscript(self, title, comment):
         image_complete = False
@@ -231,6 +267,8 @@ class Analyzer(object):
 
             # check end file
             if (byte == 0x04):
+                byte = self.uart.read_byte()
+                byte = self.uart.read_byte()
                 image_complete = True
 
         print('\nReceive Complete')
