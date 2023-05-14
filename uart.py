@@ -93,6 +93,7 @@ class UART:
             exit()
 
         if tmp == b'':
+            print("Serial timeout occur")
             return None
         return int.from_bytes(tmp, byteorder='little', signed=False)
 
