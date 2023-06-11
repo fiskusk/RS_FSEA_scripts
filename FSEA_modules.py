@@ -5,9 +5,7 @@
 
 import time
 import os
-import csv
-import unidecode
-from termcolor import colored
+import log
 
 from uart import UART
 
@@ -30,7 +28,11 @@ def create_file(data, dir='', title='', extension='.dat'):
 class Analyzer(object):
     def __init__(self, name=''):
         self.uart = UART(name, baudrate=19200, timeout=10)
-        print("Connected to Analyzer: " + ''.join(chr(x) for x in self.send_read("*IDN?")))
+        analyzerIdentifier = self.send_read("*IDN?")
+        if analyzerIdentifier == None:
+            log.err('Analyzer did not respond to *IDN? in response time')
+            exit(1)
+        print("Connected to Analyzer: " + ''.join(chr(x) for x in analyzerIdentifier))
         print("Instaled Options: " + ''.join(chr(x) for x in self.send_read("*OPT?")))
 
     def send_cmd(self, cmd):

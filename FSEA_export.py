@@ -2,10 +2,61 @@
 # program for download exports from Rohde Schwarz FSEA
 # using py -3.9
 
+# import unidecode
+# from termcolor import colored
+# import configparser
+import os
+import sys
+import atexit
+
+def exit_handler():
+    input("Press Any Key To Exit...")
+
+atexit.register(exit_handler)
+
+try:
+    import tests as main_test
+except SyntaxError:
+    version_info = (
+        f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+    )
+    string = f"You're executing the script with Python {version_info}. Execute the script with Python 3.9"
+    print(string)
+    exit()
+
+main_test.version_check()
+
+try:
+    import unidecode
+except ImportError:
+    print ("Trying to Install required module: unidecode\n")
+    os.system('python -m pip install unidecode')
+    # -- above lines try to install requests module if not present
+    # -- if all went well, import required module again ( for global access)
 import unidecode
+
+try:
+    from termcolor import colored
+except ImportError:
+    print ("Trying to Install required module: termcolor\n")
+    os.system('python -3.9 -m pip install termcolor')
+    # -- above lines try to install requests module if not present
+    # -- if all went well, import required module again ( for global access)
 from termcolor import colored
 
+try:
+    import configparser
+except ImportError:
+    print ("Trying to Install required module: configparser\n")
+    os.system('python -3.9 -m pip install configparser')
+    # -- above lines try to install requests module if not present
+    # -- if all went well, import required module again ( for global access)
+import configparser
+
 from FSEA_modules import Analyzer
+
+# def install(package):
+#     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
 def get_title():
     title = input('\nEnter TITLE (max 60 characters) >>> ')

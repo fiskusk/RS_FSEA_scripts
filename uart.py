@@ -64,7 +64,6 @@ class UART:
 
         log.err(self.name + ' is not connected')
         self.list_ports()
-        input("Press Any Key To Exit...")
         exit(1)
 
     def list_ports(self):
