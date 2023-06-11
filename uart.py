@@ -1,13 +1,27 @@
 # wykys
 # library for basic UART manipulation
 
-import serial
-from serial.tools import list_ports
-
 import time
 import os
 import log
 
+try:
+    import serial
+except ImportError:
+    print ("Trying to Install required module: serial\n")
+    os.system('py -3.9 -m pip install serial')
+    # -- above lines try to install requests module if not present
+    # -- if all went well, import required module again ( for global access)
+import serial
+
+try:
+	from serial.tools import list_ports
+except ImportError:
+    print ("Trying to Install required module: pyserial \n")
+    os.system('py -3.9 -m pip install pyserial')
+    # -- above lines try to install requests module if not present
+    # -- if all went well, import required module again ( for global access)
+from serial.tools import list_ports
 
 def singleton(class_):
     instances = {}

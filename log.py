@@ -1,6 +1,15 @@
 # wykys 2018
 
+import os
 from sys import stdout, stderr
+
+try:
+    from colorama import Fore, Style, init
+except ImportError:
+    print ("Trying to Install required module: colorama\n")
+    os.system('py -3.9 -m pip install colorama')
+    # -- above lines try to install requests module if not present
+    # -- if all went well, import required module again ( for global access)
 from colorama import Fore, Style, init
 init()
 

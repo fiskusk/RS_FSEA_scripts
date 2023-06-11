@@ -30,7 +30,7 @@ try:
     import unidecode
 except ImportError:
     print ("Trying to Install required module: unidecode\n")
-    os.system('python -m pip install unidecode')
+    os.system('py -3.9 -m pip install unidecode')
     # -- above lines try to install requests module if not present
     # -- if all went well, import required module again ( for global access)
 import unidecode
@@ -39,7 +39,7 @@ try:
     from termcolor import colored
 except ImportError:
     print ("Trying to Install required module: termcolor\n")
-    os.system('python -3.9 -m pip install termcolor')
+    os.system('py -3.9 -m pip install termcolor')
     # -- above lines try to install requests module if not present
     # -- if all went well, import required module again ( for global access)
 from termcolor import colored
@@ -48,7 +48,7 @@ try:
     import configparser
 except ImportError:
     print ("Trying to Install required module: configparser\n")
-    os.system('python -3.9 -m pip install configparser')
+    os.system('py -3.9 -m pip install configparser')
     # -- above lines try to install requests module if not present
     # -- if all went well, import required module again ( for global access)
 import configparser
