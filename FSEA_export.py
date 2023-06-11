@@ -44,6 +44,7 @@ except ImportError:
     # -- if all went well, import required module again ( for global access)
 from termcolor import colored
 
+# https://docs.python.org/3/library/configparser.html
 try:
     import configparser
 except ImportError:
@@ -101,28 +102,44 @@ if len(sys.argv) == 1:
 elif len(sys.argv) == 2:
     serialPort = sys.argv[1]
 fsea = Analyzer(serialPort)
-selector = print_menu()
-title = get_title()
-comment = get_comment()
 
-if selector == 1:
-    fsea.get_postscript(title, comment)
-elif selector == 2:
-    fsea.get_trace_file(title, comment)
-elif selector == 3:
-    fsea.get_trace_data(title, comment)
-elif selector == 12:
-    fsea.get_postscript(title, comment)
-    fsea.get_trace_file(title, comment)
-elif selector == 13:
-    fsea.get_postscript(title, comment)
-    fsea.get_trace_data(title, comment)
-elif selector == 23:
-    fsea.get_trace_file(title, comment)
-    fsea.get_trace_data(title, comment)
-elif selector == 123:
-    fsea.get_postscript(title, comment)
-    fsea.get_trace_file(title, comment)
-    fsea.get_trace_data(title, comment)
-else:
-    print("Bad Input")
+run = True
+while (run == True) :
+	selector = print_menu()
+	title = get_title()
+	comment = get_comment()
+
+	if selector == 1:
+		fsea.get_postscript(title, comment)
+	elif selector == 2:
+		fsea.get_trace_file(title, comment)
+	elif selector == 3:
+		fsea.get_trace_data(title, comment)
+	elif selector == 12:
+		fsea.get_postscript(title, comment)
+		fsea.get_trace_file(title, comment)
+	elif selector == 13:
+		fsea.get_postscript(title, comment)
+		fsea.get_trace_data(title, comment)
+	elif selector == 23:
+		fsea.get_trace_file(title, comment)
+		fsea.get_trace_data(title, comment)
+	elif selector == 123:
+		fsea.get_postscript(title, comment)
+		fsea.get_trace_file(title, comment)
+		fsea.get_trace_data(title, comment)
+	else:
+		print("Bad Input")
+
+	while True:
+		try:
+			cont = input("Do you wish continue? (Y/N) >>> ")
+			if cont == "Y" or cont == "N" or cont == "y" or cont == "n":
+				break
+			else:
+				print("That's not a valid option!")
+		except:
+			print("That's not a valid option!")
+			
+	if cont == "N" or cont == "n" :
+		run = False
