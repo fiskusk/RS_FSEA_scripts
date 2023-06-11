@@ -10,7 +10,7 @@ import sys
 import atexit
 
 def exit_handler():
-    input("Press Enter Key To Exit...")
+    input("Press Enter To Exit...")
 
 atexit.register(exit_handler)
 
@@ -96,8 +96,11 @@ def print_menu():
 
     return selector
 
-
-fsea = Analyzer('COM4')
+if len(sys.argv) == 1:
+    serialPort = 'COM4'
+elif len(sys.argv) == 2:
+    serialPort = sys.argv[1]
+fsea = Analyzer(serialPort)
 selector = print_menu()
 title = get_title()
 comment = get_comment()
