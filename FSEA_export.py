@@ -10,7 +10,7 @@ import sys
 import atexit
 
 def exit_handler():
-    input("Press Any Key To Exit...")
+    input("Press Enter Key To Exit...")
 
 atexit.register(exit_handler)
 
