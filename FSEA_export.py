@@ -127,7 +127,7 @@ while (run == True) :
 	elif selector == 123:
 		fsea.get_postscript(title, comment)
 		fsea.get_trace_file(title, comment)
-		fsea.get_trace_data(title, comment)
+		fsea.get_trace_data(title, comment) 
 	else:
 		print("Bad Input")
 
