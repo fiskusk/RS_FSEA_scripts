@@ -54,6 +54,15 @@ except ImportError:
     # -- if all went well, import required module again ( for global access)
 import configparser
 
+try:
+    import pyvisa as visa
+except ImportError:
+    print ("Trying to Install required module: pyvisa\n")
+    os.system('py -3.9 -m pip install pyvisa')
+    # -- above lines try to install requests module if not present
+    # -- if all went well, import required module again ( for global access)
+import pyvisa as visa
+
 from FSEA_modules import Analyzer
 
 # def install(package):
