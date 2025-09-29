@@ -54,15 +54,6 @@ except ImportError:
     # -- if all went well, import required module again ( for global access)
 import configparser
 
-try:
-    import pyvisa as visa
-except ImportError:
-    print ("Trying to Install required module: pyvisa\n")
-    os.system('py -3.9 -m pip install pyvisa')
-    # -- above lines try to install requests module if not present
-    # -- if all went well, import required module again ( for global access)
-import pyvisa as visa
-
 from FSEA_modules import Analyzer
 
 # def install(package):
@@ -107,10 +98,10 @@ def print_menu():
     return selector
 
 if len(sys.argv) == 1:
-    serialPort = 'COM4'
+    deviceId = 'GPIB0::20::INSTR'
 elif len(sys.argv) == 2:
-    serialPort = sys.argv[1]
-fsea = Analyzer(serialPort)
+    deviceId = sys.argv[1]
+fsea = Analyzer('GPIB', deviceId);
 
 run = True
 while (run == True) :
